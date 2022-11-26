@@ -2,8 +2,6 @@
 
 pragma solidity 0.8.6;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 interface ISwapFactory {
@@ -423,7 +421,7 @@ contract Ownable is Context {
     }
 }
 
-contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
+contract KNTC is Ownable, ERC20Votes {
     uint256 private constant MAX_UINT256 = ~uint256(0);
     uint256 private constant INITIAL_FRAGMENTS_SUPPLY = 10 * 10**5 * 10**DECIMALS;
 
@@ -504,21 +502,21 @@ contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
 
      function _afterTokenTransfer(address from, address to, uint256 amount)
         internal
-        override(ERC20, ERC20Votes)
+        override(ERC20Votes)
     {
         super._afterTokenTransfer(from, to, amount);
     }
 
     function _mint(address to, uint256 amount)
         internal
-        override(ERC20, ERC20Votes)
+        override(ERC20Votes)
     {
         super._mint(to, amount);
     }
 
     function _burn(address account, uint256 amount)
         internal
-        override(ERC20, ERC20Votes)
+        override(ERC20Votes)
     {
         super._burn(account, amount);
     }
@@ -581,14 +579,13 @@ contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
         return _totalSupply;
     }
 
-    function totalSupply() public view override(IERC20, ERC20) returns (uint256) {
+    function totalSupply() public view override returns (uint256) {
         return _totalSupply;
     }
 
     function transfer(address recipient, uint256 amount)
         public
         override
-        (IERC20, ERC20)
         returns (bool)
     {
         _transfer(msg.sender, recipient, amount);
@@ -599,7 +596,7 @@ contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
         address sender,
         address recipient,
         uint256 amount
-    ) public override(IERC20, ERC20) returns (bool) {
+    ) public override returns (bool) {
         _transfer(sender, recipient, amount);
         _approve(
             sender,
@@ -656,7 +653,6 @@ contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
     function approve(address spender, uint256 amount)
         public
         override
-        (IERC20, ERC20)
         returns (bool)
     {
         _approve(msg.sender, spender, amount);
@@ -667,7 +663,6 @@ contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
         public
         view
         override
-        (IERC20, ERC20)
         returns (uint256)
     {
         return _allowedFragments[owner_][spender];
@@ -677,7 +672,7 @@ contract KNTC is IERC20, Ownable, ERC20Permit, ERC20Votes {
         swapAndLiquifyEnabled = _enabled;
     }
 
-    function balanceOf(address account) public view override(IERC20, ERC20) returns (uint256) {
+    function balanceOf(address account) public view override returns (uint256) {
         return _twcdBalances[account] / _wcdPerFragment;
     }
 
