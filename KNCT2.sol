@@ -2,6 +2,8 @@
 
 pragma solidity 0.8.6;
 
+
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 interface ISwapFactory {
@@ -376,6 +378,8 @@ contract Ownable is Context {
      */
     constructor () {
         address msgSender = _msgSender();
+        // _owner = 0xAB20a2363ADEFe2dF3B19EE152fA65608F8Bfb9C;
+        // emit OwnershipTransferred(address(0), _owner);
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
     }
@@ -421,7 +425,7 @@ contract Ownable is Context {
     }
 }
 
-contract KNTC is Ownable, ERC20Votes {
+contract MONSON is Ownable, ERC20Permit, ERC20Votes {
     uint256 private constant MAX_UINT256 = ~uint256(0);
     uint256 private constant INITIAL_FRAGMENTS_SUPPLY = 10 * 10**5 * 10**DECIMALS;
 
@@ -433,8 +437,8 @@ contract KNTC is Ownable, ERC20Votes {
 
     address private constant BURN_ADDRESS = 0x000000000000000000000000000000000000dEaD;
 
-    string private constant NAME = "KNTCKY";
-    string private constant SYMBOL = "KNTC2";
+    string private constant NAME = "MONSON";
+    string private constant SYMBOL = "MNSN";
     uint8 private constant DECIMALS = 9;
 
     // marketingTax is 3% i.e (300 / 100)%
@@ -473,7 +477,7 @@ contract KNTC is Ownable, ERC20Votes {
         inSwapAndLiquify = false;
     }
 
-    constructor() ERC20("MyToken", "MTK") ERC20Permit("MyToken") {
+    constructor() ERC20("MONSON", "MNSN") ERC20Permit("MONSON") {
         ISwapRouter02 _swapRouter = ISwapRouter02(
             0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
         );
@@ -502,21 +506,21 @@ contract KNTC is Ownable, ERC20Votes {
 
      function _afterTokenTransfer(address from, address to, uint256 amount)
         internal
-        override(ERC20Votes)
+        override(ERC20, ERC20Votes)
     {
         super._afterTokenTransfer(from, to, amount);
     }
 
     function _mint(address to, uint256 amount)
         internal
-        override(ERC20Votes)
+        override(ERC20, ERC20Votes)
     {
         super._mint(to, amount);
     }
 
     function _burn(address account, uint256 amount)
         internal
-        override(ERC20Votes)
+        override(ERC20, ERC20Votes)
     {
         super._burn(account, amount);
     }
