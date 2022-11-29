@@ -504,11 +504,11 @@ contract MONSON is Ownable, ERC20Permit, ERC20Votes {
 
     receive() external payable {}
 
-     function _afterTokenTransfer(address from, address to, uint256 amount)
+    function _afterTokenTransfer(address sender, address recipient, uint256 amount)
         internal
         override(ERC20, ERC20Votes)
     {
-        super._afterTokenTransfer(from, to, amount);
+        super._afterTokenTransfer(sender, recipient, amount);
     }
 
     function _mint(address to, uint256 amount)
@@ -583,13 +583,14 @@ contract MONSON is Ownable, ERC20Permit, ERC20Votes {
         return _totalSupply;
     }
 
-    function totalSupply() public view override returns (uint256) {
+    function totalSupply() public view override(ERC20) returns (uint256) {
         return _totalSupply;
+        
     }
 
     function transfer(address recipient, uint256 amount)
         public
-        override
+        override(ERC20)
         returns (bool)
     {
         _transfer(msg.sender, recipient, amount);
@@ -600,7 +601,7 @@ contract MONSON is Ownable, ERC20Permit, ERC20Votes {
         address sender,
         address recipient,
         uint256 amount
-    ) public override returns (bool) {
+    ) public override(ERC20) returns (bool) {
         _transfer(sender, recipient, amount);
         _approve(
             sender,
@@ -676,7 +677,7 @@ contract MONSON is Ownable, ERC20Permit, ERC20Votes {
         swapAndLiquifyEnabled = _enabled;
     }
 
-    function balanceOf(address account) public view override returns (uint256) {
+    function balanceOf(address account) public view override(ERC20) returns (uint256) {
         return _twcdBalances[account] / _wcdPerFragment;
     }
 
@@ -699,7 +700,7 @@ contract MONSON is Ownable, ERC20Permit, ERC20Votes {
         address sender,
         address recipient,
         uint256 amount
-    ) internal virtual override {
+    ) internal override(ERC20) {
         require(
             recipient != address(0),
             "Cannot transfer to the zero address"
@@ -727,6 +728,7 @@ contract MONSON is Ownable, ERC20Permit, ERC20Votes {
         ) swapAndLiquify(numTokensSwap);
 
         _tokenTransfer(sender, recipient, amount);
+        _afterTokenTransfer(sender, recipient, amount);
     }
 
     function _tokenTransfer(
